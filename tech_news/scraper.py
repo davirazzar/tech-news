@@ -7,13 +7,13 @@ from parsel import Selector
 # Requisito 1
 def fetch(url):
     try:
+        time.sleep(1)  # 1 seconds pause
         response = requests.get(
             url, headers={"user-agent": "Fake user-agent"}, timeout=3
         )
         if response.status_code != 200:
             return None
         html_content = response.text
-        time.sleep(1)  # 1 seconds pause
     except requests.ReadTimeout:
         return None
     return html_content
@@ -72,4 +72,16 @@ def scrape_noticia(html_content):
 
 # Requisito 5
 def get_tech_news(amount):
-    """Seu código deve vir aqui"""
+    ...
+    # URL_BASE = "https://blog.betrybe.com/"
+    # next_page_url = "/page/1/"
+    # news = []
+    # while next_page_url:
+    #     # Busca o conteúdo da próxima página
+    #     html_content = fetch(URL_BASE + next_page_url)
+    #     # Transforma o conteudo da página em um dict
+    #     page_info = scrape_noticia(html_content)
+    #     news.append(page_info)
+    #     # Descobre qual é a próxima página
+    #     next_page_url = scrape_next_page_link(html_content)
+    # return news
