@@ -2,6 +2,7 @@ import re
 import requests
 import time
 from parsel import Selector
+from tech_news.database import create_news
 
 
 # Requisito 1
@@ -58,9 +59,9 @@ def scrape_noticia(html_content):
         extract_number_regex = re.findall("[0-9]+", str)
         page_info["comments_count"] = extract_number_regex[0]
     page_info["summary"] = "".join(
-        selector.css("div.entry-content > p:nth-of-type(1) *::text").getall()
+        selector.css(
+          "div.entry-content > p:nth-of-type(1) *::text").getall()
     ).strip()
-    print(page_info["summary"])
     page_info["tags"] = selector.css(
         "section.post-tags ul li a[rel=tag]::text"
     ).getall()
@@ -72,16 +73,19 @@ def scrape_noticia(html_content):
 
 # Requisito 5
 def get_tech_news(amount):
-    ...
-    # URL_BASE = "https://blog.betrybe.com/"
-    # next_page_url = "/page/1/"
-    # news = []
-    # while next_page_url:
-    #     # Busca o conteúdo da próxima página
-    #     html_content = fetch(URL_BASE + next_page_url)
-    #     # Transforma o conteudo da página em um dict
-    #     page_info = scrape_noticia(html_content)
-    #     news.append(page_info)
-    #     # Descobre qual é a próxima página
-    #     next_page_url = scrape_next_page_link(html_content)
-    # return news
+    # ...
+    next_page_url = "https://blog.betrybe.com/"
+    news_list = []
+    index = 1
+    while next_page_url and index <= amount:
+        news_pages = fetch(next_page_url)
+        news_url = scrape_novidades(news_pages)
+        for url in news_url:
+            news_detail_page = fetch(url)
+            news_dict = scrape_noticia(news_detail_page)
+            news_list.append(news_dict)
+        index = index + 1
+        next_page_url = scrape_next_page_link(next_page_url)
+        # print("news_list", news_list)
+    create_news(news_list)
+    return news_list
