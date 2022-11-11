@@ -42,4 +42,10 @@ def search_by_tag(tag):
 
 # Requisito 9
 def search_by_category(category):
-    """Seu código deve vir aqui"""
+    query = {'category': {'$regex': category, '$options': 'i'}}
+    database_result = search_news(query)
+    result = []
+    for news in database_result:
+        if news:
+            result.append((news["title"], news["url"]))
+    return result
